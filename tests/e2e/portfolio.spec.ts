@@ -213,6 +213,7 @@ test("required viewport set has no horizontal overflow or clipped hero title", a
   ] as const;
   await page.goto("/");
   await skipIntro(page);
+  await expect.poll(() => page.locator(".entry-character img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0), { timeout: 10_000 }).toBe(true);
   for (const [width, height] of sizes) {
     await page.setViewportSize({ width, height });
     await page.evaluate(() => { window.scrollTo({ top: 0, behavior: "instant" }); window.dispatchEvent(new Event("resize")); });
@@ -221,16 +222,16 @@ test("required viewport set has no horizontal overflow or clipped hero title", a
       viewport: document.documentElement.clientWidth,
       document: document.documentElement.scrollWidth,
       scrollY: window.scrollY,
-      hero: document.querySelector("#hero-title")?.getBoundingClientRect().toJSON(),
+      hero: (() => { const rect = document.querySelector("#hero-title")?.getBoundingClientRect(); return rect ? { left: rect.left, right: rect.right } : null; })(),
       characterImageLoaded: (() => { const image = document.querySelector<HTMLImageElement>(".entry-character .cinematic-media__image"); return Boolean(image?.complete && image.naturalWidth > 0); })(),
-      navigation: document.querySelector(".dock-wrap")?.getBoundingClientRect().toJSON(),
+      characterSafeTop: (() => { const figure = document.querySelector<HTMLElement>(".entry-character"); if (!figure) return 0; const style = getComputedStyle(figure); return style.top === "auto" ? window.innerHeight - Number.parseFloat(style.bottom) - Number.parseFloat(style.height) : Number.parseFloat(style.top); })(),
+      navigation: (() => { const rect = document.querySelector(".dock-wrap")?.getBoundingClientRect(); return rect ? { bottom: rect.bottom } : null; })(),
     }));
     expect(dimensions.document, `${width}x${height} should not scroll horizontally`).toBeLessThanOrEqual(dimensions.viewport + 1);
     expect(dimensions.hero?.left ?? -1, `${width}x${height} hero title should not clip on the left`).toBeGreaterThanOrEqual(-1);
     expect(dimensions.hero?.right ?? width + 1, `${width}x${height} hero title should remain inside the viewport`).toBeLessThanOrEqual(width + 1);
     expect(dimensions.characterImageLoaded, `${width}x${height} approved hero character asset should load`).toBe(true);
-    const character = await page.locator(".entry-character").boundingBox();
-    expect(character?.top ?? 0, `${width}x${height} character head safe zone should clear navigation`).toBeGreaterThan((dimensions.navigation?.bottom ?? 0) + 4);
+    expect(dimensions.characterSafeTop, `${width}x${height} character head safe zone should clear navigation`).toBeGreaterThan((dimensions.navigation?.bottom ?? 0) + 4);
     await page.screenshot({ path: resolve(screenshots, `viewport-${width}x${height}.png`) });
   }
 });
