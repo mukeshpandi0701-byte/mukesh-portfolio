@@ -13,6 +13,8 @@
 # testing
 /coverage
 test-results/
+playwright-report/
+artifacts/screenshots/
 
 # next.js
 /.next/
@@ -44,4 +46,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-playwright-report/
+# Local development
+*.local
+Thumbs.db
+Desktop.ini
+
+# Playwright cache
+/playwright/.cache/
+/playwright/.auth/
+
+# Temporary media files
+*.tmp
