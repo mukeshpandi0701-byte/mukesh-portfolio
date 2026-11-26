@@ -7,10 +7,12 @@ mkdirSync(screenshots, { recursive: true });
 
 async function skipIntro(page: Page) {
   const intro = page.getByRole("region", { name: "Mukesh portfolio introduction" });
+  await expect(page.locator("[data-cinematic-root]")).toHaveAttribute("data-motion-mode", "cinematic");
   if (await intro.isVisible().catch(() => false)) {
     await page.getByRole("button", { name: /skip introduction/i }).click();
-    await expect(intro).toBeHidden();
   }
+  await expect(intro).toHaveCount(0, { timeout: 6_000 });
+  await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
 }
 
 async function sceneProgress(page: Page) {
