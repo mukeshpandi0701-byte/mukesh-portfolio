@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mukesh - Cinematic Portfolio
 
-## Getting Started
+A cinematic personal portfolio built with Next.js App Router, strict TypeScript, Tailwind CSS, GSAP and ScrollTrigger. Milestone 3 integrates the supplied portrait set and transparent character poses, including a pose-based introduction, full-body hero, pinned identity transformation, horizontal project exploration, editorial skills interaction, visual journey, rooftop finale, Light/Dark/System themes and OriginOS glass lab.
 
-First, run the development server:
+## Run locally
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm.cmd run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The Next 16 CSS pipeline uses `@tailwindcss/postcss` through `postcss.config.mjs`. Turbopack still intermittently exits while spawning its CSS worker in this Windows environment, including with the official PostCSS setup, so the documented dev and production scripts explicitly use Webpack.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run the verification commands from PowerShell:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```powershell
+npx.cmd tsc --noEmit
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run test:e2e
+```
 
-## Learn More
+Playwright uses the installed Chrome channel and a production server. Run `npm.cmd run build` first. The suite captures viewports and scene states in `artifacts/screenshots/`.
 
-To learn more about Next.js, take a look at the following resources:
+## Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` - cinematic portfolio experience
+- `/projects/classygenz`, `/projects/resync`, `/projects/invenzo-ai` - editable case-study pages
+- `/lab/glass` - moving-background glass material comparison
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The opening sequence runs once per tab, can be skipped, and uses static still poses as brief match cuts. It does not represent those stills as walking footage. The hero-to-identity scene and horizontal project scene use a shared GSAP controller; reduced motion switches them back to semantic document flow. See `docs/MOTION-SYSTEM.md` and `docs/ARCHITECTURE.md`.
 
-## Deploy on Vercel
+## Content and assets
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The approved supplied assets are registered in `src/data/assets.ts`. Original PNG files remain unchanged; Next Image performs responsive modern-format delivery. Character pose images are static transparent cutouts. Named motion slots are ready for entrance footage, head turns, rear exits and laptop transitions, alongside poster-backed transparent video and scroll-controlled WebP/AVIF frames. Project facts, the email address, and social URLs remain visibly marked for verification. See `docs/ASSET-REQUIREMENTS.md`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notes
+
+Theme choice supports Light, Dark and System and is persisted by `next-themes`. ScrollTrigger timelines are scoped and reverted on unmount. The contact destination is an `example.invalid` placeholder. OriginOS is a proprietary native rendering system; the glass lab documents browser compositing approximations and cannot provide physical refraction or verified native fidelity.
