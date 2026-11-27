@@ -54,6 +54,11 @@ export function useCinematicSceneController() {
             onUpdate: (self) => projectScene.style.setProperty("--scene-progress", self.progress.toFixed(3)),
           },
         });
+        const laptopTransition = projectScene.querySelector<HTMLElement>(".project-story__transition");
+        if (laptopTransition) {
+          timeline.fromTo(laptopTransition, { clipPath: "inset(16% 16% 16% 16%)", scale: 0.94, opacity: 0 }, { clipPath: "inset(0% round 2px)", scale: 1, opacity: 1, duration: 0.26, ease: "none" }, 0);
+          timeline.to(laptopTransition, { clipPath: "inset(0 0 100% 0)", opacity: 0, duration: 0.3, ease: "none" }, 0.26);
+        }
         timeline.to(track, { x: () => -travel(), duration: cards.length - 1, ease: "none" }, 0);
         cards.forEach((card, index) => projectFrameReveal(timeline, card, index));
         projectToNextScene(timeline, cards.length - 1 + 0.52);

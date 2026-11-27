@@ -1,5 +1,6 @@
 export type StillMedia = { kind: "still"; src: string; alt: string; width: number; height: number };
-export type VideoMedia = { kind: "video"; src: string; poster: string; alt: string; transparent?: boolean };
+export type VideoSource = { src: string; type: "video/webm" | "video/mp4" };
+export type VideoMedia = { kind: "video"; src: string; sources?: VideoSource[]; poster: string; alt: string; transparent?: boolean; scrollControlled?: boolean; loop?: boolean };
 export type SequenceMedia = { kind: "sequence"; frames: string[]; poster: string; alt: string };
 export type CinematicMediaAsset = StillMedia | VideoMedia | SequenceMedia;
 
