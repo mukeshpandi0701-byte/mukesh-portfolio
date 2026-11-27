@@ -36,7 +36,7 @@ test("opening can be skipped and hands off to the approved hero assets", async (
   await expect(page.locator(".dock-wrap")).toBeVisible();
   await expect.poll(() => page.locator(".entry-character img").evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.screenshot({ path: resolve(screenshots, "hero-1920x1080.png") });
-  expect(errors.filter((error) => /hydration|uncaught|failed to hydrate/i.test(error))).toEqual([]);
+  expect(errors, "page should have no console or hydration errors").toEqual([]);
 });
 
 test("opening completes naturally without a loading screen", async ({ browser }) => {
@@ -154,14 +154,14 @@ test("case studies and the glass comparison lab render", async ({ page }) => {
   const labResponse = await page.goto("/lab/glass");
   expect(labResponse?.ok()).toBe(true);
   await expect(page.getByRole("heading", { name: /glass, in motion/i })).toBeVisible();
-  await expect(page.locator(".sample")).toHaveCount(3);
+  await expect(page.locator(".sample")).toHaveCount(4);
   await page.screenshot({ path: resolve(screenshots, "glass-lab-1440x900.png") });
   await page.goto("/");
   await skipIntro(page);
   await page.locator("#contact").evaluate((node) => node.scrollIntoView({ block: "start", behavior: "instant" }));
   const finaleTitle = page.getByRole("heading", { name: "LET'S TALK." });
   await expect(finaleTitle).toBeVisible();
-  await expect(page.getByRole("link", { name: /Contact email placeholder/ })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Contact links" })).toHaveCount(0);
   const desktopFinale = await page.evaluate(() => {
     const note = document.querySelector(".finale-note")?.getBoundingClientRect();
     const title = document.querySelector(".finale-link")?.getBoundingClientRect();
@@ -175,7 +175,7 @@ test("case studies and the glass comparison lab render", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator("#contact").evaluate((node) => node.scrollIntoView({ block: "start", behavior: "instant" }));
   await expect(page.getByRole("heading", { name: "LET'S TALK." })).toBeVisible();
-  await expect(page.getByRole("link", { name: /Contact email placeholder/ })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Contact links" })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(391);
   await page.screenshot({ path: resolve(screenshots, "finale-390x844.png") });
 });
